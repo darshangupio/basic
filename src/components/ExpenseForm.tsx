@@ -1,12 +1,10 @@
 import { useState } from 'react';
 import { CATEGORIES } from '../types/expense';
-import type { Category, Expense } from '../types/expense';
+import { useExpenses } from '../context/ExpenseContext';
+import type { Category } from '../types/expense';
 
-interface Props {
-  onAdd: (expense: Omit<Expense, 'id'>) => void;
-}
-
-const ExpenseForm = ({ onAdd }: Props) => {
+const ExpenseForm = () => {
+  const { addExpense } = useExpenses();
   const [title, setTitle] = useState('');
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState<Category | ''>('');
@@ -17,10 +15,10 @@ const ExpenseForm = ({ onAdd }: Props) => {
     // Basic validation
     if (!title || !amount || !category) return;
 
-    onAdd({
+    addExpense({
       title,
       amount: parseFloat(amount),
-      category: category as Category
+      category: category as Category,
     });
 
     // Reset form
@@ -30,7 +28,7 @@ const ExpenseForm = ({ onAdd }: Props) => {
   };
 
   return (
-    <form className="expense-form glass" onSubmit={handleSubmit}>
+    <form className="expense-form" onSubmit={handleSubmit}>
       <div className="form-group">
         <label htmlFor="title">Description</label>
         <input 

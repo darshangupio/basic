@@ -1,74 +1,78 @@
-# React + TypeScript + Vite
+# Basic
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a small expense tracker built with React, TypeScript, and Vite.
+It now also works as a practice project for these React concepts:
 
-Currently, two official plugins are available:
+- Smart vs dumb components
+- Reusable components
+- Component composition
+- Props drilling and why it is bad
+- Children prop
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## What The App Does
 
-## React Compiler
+- Add a new expense with title, amount, and category
+- Filter expenses by category
+- Delete an expense
+- Show summary cards for total entries and spending
+- Display a learning section that explains the concepts used in the code
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Where Each Concept Is Used
 
-## Expanding the ESLint configuration
+### 1. Smart vs Dumb Components
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Smart components handle data and behavior.
+Dumb components mostly focus on showing UI.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Smart logic lives in [`src/context/ExpenseContext.tsx`](src/context/ExpenseContext.tsx)
+- Dumb UI examples:
+  - [`src/components/ExpenseItem.tsx`](src/components/ExpenseItem.tsx)
+  - [`src/components/ui/StatCard.tsx`](src/components/ui/StatCard.tsx)
+  - [`src/components/ui/Card.tsx`](src/components/ui/Card.tsx)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 2. Reusable Components
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-# basic
+Reusable components help avoid repeating the same UI code.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- [`src/components/ui/Card.tsx`](src/components/ui/Card.tsx) is used as a reusable wrapper
+- [`src/components/ui/StatCard.tsx`](src/components/ui/StatCard.tsx) is used for summary boxes
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 3. Component Composition
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Composition means building a page by combining smaller components together.
+
+- [`src/App.tsx`](src/App.tsx) composes the page from:
+  - `Card`
+  - `ExpenseSummary`
+  - `ExpenseForm`
+  - `ExpenseList`
+  - `LearningGuide`
+
+## 4. Props Drilling
+
+Props drilling happens when data is passed through many components that do not really need it, just so a deeply nested component can use it.
+
+That becomes hard to manage in bigger apps.
+
+This project avoids that by using Context:
+
+- [`src/context/ExpenseContext.tsx`](src/context/ExpenseContext.tsx)
+
+Now `ExpenseForm`, `ExpenseList`, and `ExpenseSummary` can read shared data directly without passing everything down from `App`.
+
+## 5. Children Prop
+
+The `children` prop lets a component wrap other content.
+
+Example:
+
+- [`src/components/ui/Card.tsx`](src/components/ui/Card.tsx)
+
+The `Card` component accepts `children`, so it can hold forms, lists, summary cards, or learning notes inside the same reusable layout.
+
+## Run The Project
+
+```bash
+npm install
+npm run dev
 ```

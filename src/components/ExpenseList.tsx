@@ -1,21 +1,16 @@
 import { CATEGORIES } from '../types/expense';
-import type { Expense, Category } from '../types/expense';
+import { useExpenses } from '../context/ExpenseContext';
+import type { Category } from '../types/expense';
 import ExpenseItem from './ExpenseItem';
 
-interface Props {
-  expenses: Expense[];
-  onDelete: (id: string) => void;
-  selectedCategory: Category | 'All';
-  onFilterChange: (category: Category | 'All') => void;
-}
+const ExpenseList = () => {
+  const { expenses, filter, setFilter, deleteExpense } = useExpenses();
 
-const ExpenseList = ({ expenses, onDelete, selectedCategory, onFilterChange }: Props) => {
-  // 1. Filter expenses based on selected category
-  const filteredExpenses = selectedCategory === 'All' 
-    ? expenses 
-    : expenses.filter(exp => exp.category === selectedCategory);
+  const filteredExpenses =
+    filter === 'All'
+      ? expenses
+      : expenses.filter((expense) => expense.category === filter);
 
-  // 2. Calculate total using reduce
   const total = filteredExpenses.reduce((acc, curr) => acc + curr.amount, 0);
 
   return (
@@ -24,8 +19,8 @@ const ExpenseList = ({ expenses, onDelete, selectedCategory, onFilterChange }: P
         <label htmlFor="category-filter">Filter by Category:</label>
         <select 
           id="category-filter"
-          value={selectedCategory} 
-          onChange={(e) => onFilterChange(e.target.value as Category | 'All')}
+          value={filter}
+          onChange={(e) => setFilter(e.target.value as Category | 'All')}
         >
           <option value="All">All Categories</option>
           {CATEGORIES.map(cat => (
@@ -40,7 +35,7 @@ const ExpenseList = ({ expenses, onDelete, selectedCategory, onFilterChange }: P
             <ExpenseItem 
               key={expense.id} 
               expense={expense} 
-              onDelete={onDelete} 
+              onDelete={deleteExpense} 
             />
           ))
         ) : (
